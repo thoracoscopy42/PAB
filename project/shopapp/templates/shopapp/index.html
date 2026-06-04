@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Sklep</title>
+</head>
+<body>
+    <h1>Lista produktów</h1>
+
+    <a href="{% url 'order_product' %}">Zamów produkt</a>
+
+    <ul>
+        {% for product in products %}
+            <li>
+                {{ product.name }} — cena: {{ product.price }} zł —
+                dostępne: {{ product.stock }}
+            </li>
+        {% empty %}
+            <li>Brak produktów w sklepie.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
