@@ -27,41 +27,64 @@
             <p>Produkty dodane do koszyka.</p>
         </section>
 
-        {% if cart_items %}
-            <section class="cart-box">
-                {% for item in cart_items %}
-                    <div class="cart-item">
-                        <div>
-                            <h3>{{ item.product.name }}</h3>
-                            <p>{{ item.product.description }}</p>
-                        </div>
+            {% if cart_items %}
+        <form method="post" action="{% url 'update_cart' %}" class="cart-box">
+            {% csrf_token %}
 
-                        <div class="cart-item-meta">
-                            <span>{{ item.product.price }} zł</span>
-                            <span>Ilość: {{ item.quantity }}</span>
-                        </div>
+            {% for item in cart_items %}
+                <div class="cart-item">
+                    <div>
+                        <h3>{{ item.product.name }}</h3>
+                        <p>{{ item.product.description }}</p>
                     </div>
-                {% endfor %}
 
-                <div class="cart-actions">
-                    <a href="{% url 'index' %}" class="button secondary-button">
-                        Kontynuuj zakupy
-                    </a>
+                    <div class="cart-item-meta">
+                        <span>{{ item.product.price }} zł</span>
 
-                    <a href="#" class="button">
-                        Przejdź do zamówienia
-                    </a>
+                        <label>
+                            Ilość:
+                            <input
+                                type="number"
+                                name="quantity_{{ item.product.id }}"
+                                value="{{ item.quantity }}"
+                                min="1"
+                                class="quantity-input"
+                            >
+                        </label>
+
+                        <a
+                            href="{% url 'remove_from_cart' item.product.id %}"
+                            class="remove-link"
+                        >
+                            Usuń
+                        </a>
+                    </div>
                 </div>
-            </section>
-        {% else %}
-            <div class="empty-state">
-                <h3>Koszyk jest pusty</h3>
-                <p>Dodaj produkty z listy produktów.</p>
-                <a href="{% url 'index' %}" class="button">
-                    Wróć do sklepu
+            {% endfor %}
+
+            <div class="cart-actions">
+                <a href="{% url 'index' %}" class="button secondary-button">
+                    Kontynuuj zakupy
+                </a>
+
+                <button type="submit" class="button secondary-button">
+                    Aktualizuj koszyk
+                </button>
+
+                <a href="#" class="button">
+                    Przejdź do zamówienia
                 </a>
             </div>
-        {% endif %}
+        </form>
+    {% else %}
+        <div class="empty-state">
+            <h3>Koszyk jest pusty</h3>
+            <p>Dodaj produkty z listy produktów.</p>
+            <a href="{% url 'index' %}" class="button">
+                Wróć do sklepu
+            </a>
+        </div>
+    {% endif %}
     </main>
 </body>
 </html>

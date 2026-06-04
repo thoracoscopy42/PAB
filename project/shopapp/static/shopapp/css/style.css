@@ -239,3 +239,20 @@ a {
 .secondary-button:hover {
     background: #334155;
 }
+
+.quantity-input {
+    width: 80px;
+    padding: 8px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+.remove-link {
+    color: #dc2626;
+    font-weight: 700;
+}
+
+.remove-link:hover {
+    color: #991b1b;
+}
