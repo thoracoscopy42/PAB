@@ -4,5 +4,18 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 
+from django.shortcuts import render
+
+from .models import Product
+
+
 def index(request):
-    return HttpResponse("To jest Strona główna sklepu.")
+    products = Product.objects.all().order_by("name")
+
+    return render(
+        request,
+        "shopapp/index.html",
+        {
+            "products": products,
+        }
+    )
