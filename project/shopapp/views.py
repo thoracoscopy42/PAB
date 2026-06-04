@@ -1,6 +1,6 @@
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from .models import Product
 
 
@@ -25,7 +25,6 @@ def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
     cart = request.session.get("cart", {})
-
     product_id_as_string = str(product.id)
 
     if product_id_as_string in cart:
@@ -35,6 +34,14 @@ def add_to_cart(request, product_id):
 
     request.session["cart"] = cart
     request.session.modified = True
+
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        return JsonResponse({
+            "success": True,
+            "cart_unique_count": len(cart),
+            "product_id": product.id,
+            "quantity": cart[product_id_as_string],
+        })
 
     return redirect("index")
 
