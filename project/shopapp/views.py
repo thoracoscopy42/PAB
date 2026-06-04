@@ -1,6 +1,6 @@
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from .models import Product
 
 
@@ -35,28 +35,7 @@ def add_to_cart(request, product_id):
     request.session["cart"] = cart
     request.session.modified = True
 
-    if request.headers.get("x-requested-with") == "XMLHttpRequest":
-        return JsonResponse({
-            "success": True,
-            "cart_unique_count": len(cart),
-            "product_id": product.id,
-            "quantity": cart[product_id_as_string],
-        })
-
     return redirect("index")
-
-def remove_from_cart(request, product_id):
-    cart = request.session.get("cart", {})
-
-    product_id_as_string = str(product_id)
-
-    if product_id_as_string in cart:
-        del cart[product_id_as_string]
-
-    request.session["cart"] = cart
-    request.session.modified = True
-
-    return redirect("cart_detail")
 
 def cart_detail(request):
     cart = request.session.get("cart", {})
@@ -86,26 +65,25 @@ def cart_detail(request):
         }
     )
 
-def update_cart(request):
-    if request.method == "POST":
-        cart = request.session.get("cart", {})
+def change_cart_item(request, product_id, action):
+    cart = request.session.get("cart", {})
 
-        for product_id_as_string in list(cart.keys()):
-            quantity_field_name = f"quantity_{product_id_as_string}"
-            quantity_value = request.POST.get(quantity_field_name)
+    product_id_as_string = str(product_id)
 
-            if quantity_value:
-                try:
-                    quantity = int(quantity_value)
-                except ValueError:
-                    quantity = 1
+    if product_id_as_string in cart:
+        if action == "increase":
+            cart[product_id_as_string] += 1
 
-                if quantity > 0:
-                    cart[product_id_as_string] = quantity
-                else:
-                    del cart[product_id_as_string]
+        elif action == "decrease":
+            cart[product_id_as_string] -= 1
 
-        request.session["cart"] = cart
-        request.session.modified = True
+            if cart[product_id_as_string] <= 0:
+                del cart[product_id_as_string]
+
+        elif action == "remove":
+            del cart[product_id_as_string]
+
+    request.session["cart"] = cart
+    request.session.modified = True
 
     return redirect("cart_detail")

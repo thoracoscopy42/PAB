@@ -256,3 +256,43 @@ a {
 .remove-link:hover {
     color: #991b1b;
 }
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quantity-button {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 20px;
+    transition: 0.2s ease;
+}
+
+.quantity-button:hover {
+    background: #1d4ed8;
+}
+
+.quantity-value {
+    min-width: 24px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.remove-link {
+    color: #dc2626;
+    font-weight: 700;
+}
+
+.remove-link:hover {
+    color: #991b1b;
+}
