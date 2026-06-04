@@ -3,21 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <title>Sklep</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'shopapp/css/style.css' %}">
+    
 </head>
 <body>
-    <h1>Lista produktów</h1>
+    <header class="site-header">
+        <div class="container header-content">
+            <h1 class="logo">Sklep</h1>
 
-    <a href="{% url 'order_product' %}">Zamów produkt</a>
+            <nav class="nav">
+                <a href="/admin/" class="nav-link">Login</a>
+            </nav>
+        </div>
+    </header>
 
-    <ul>
-        {% for product in products %}
-            <li>
-                {{ product.name }} — cena: {{ product.price }} zł —
-                dostępne: {{ product.stock }}
-            </li>
-        {% empty %}
-            <li>Brak produktów w sklepie.</li>
-        {% endfor %}
-    </ul>
+    <main class="container">
+        <section class="hero">
+            <h2>Lista produktów</h2>
+            <p>Wybierz produkty dostępne w naszym sklepie.</p>
+        </section>
+
+        {% if products %}
+            <section class="product-grid">
+                {% for product in products %}
+                    <article class="product-card">
+                        <div class="product-card-body">
+                            <h3>{{ product.name }}</h3>
+
+                            <p class="description">
+                                {{ product.description }}
+                            </p>
+
+                            <div class="product-info">
+                                <span class="price">{{ product.price }} zł</span>
+
+                                {% if product.stock > 0 %}
+                                    <span class="stock available">
+                                        Dostępne: {{ product.stock }}
+                                    </span>
+                                {% else %}
+                                    <span class="stock unavailable">
+                                        Brak na stanie
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="product-card-footer">
+                            {% if product.stock > 0 %}
+                                <a href="#" class="button">Zamów</a>
+                            {% else %}
+                                <button class="button disabled" disabled>Niedostępne</button>
+                            {% endif %}
+                        </div>
+                    </article>
+                {% endfor %}
+            </section>
+        {% else %}
+            <div class="empty-state">
+                <h3>Brak produktów</h3>
+                <p>Dodaj produkty w panelu administracyjnym.</p>
+                <a href="/admin/" class="button">Przejdź do admina</a>
+            </div>
+        {% endif %}
+    </main>
 </body>
 </html>
