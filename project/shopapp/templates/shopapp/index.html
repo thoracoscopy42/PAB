@@ -13,6 +13,10 @@
             <h1 class="logo">Sklep</h1>
 
             <nav class="nav">
+                <a href="{% url 'cart_detail' %}" class="cart-link">
+                    Koszyk: {{ cart_unique_count|default:0 }}
+                </a>
+
                 <a href="/admin/" class="nav-link">Login</a>
             </nav>
         </div>
@@ -52,7 +56,9 @@
 
                         <div class="product-card-footer">
                             {% if product.stock > 0 %}
-                                <a href="#" class="button">Zamów</a>
+                                <a href="{% url 'add_to_cart' product.id %}" class="button">
+                                Dodaj do koszyka
+                                </a>
                             {% else %}
                                 <button class="button disabled" disabled>Niedostępne</button>
                             {% endif %}
