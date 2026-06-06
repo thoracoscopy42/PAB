@@ -12,9 +12,5 @@ urlpatterns = [
     #dodawanie produktu do koszyka
     path("cart/add/<int:product_id>/", views.add_to_cart, name="add_to_cart"),
     #zmiana ilości w koszyku
-    path(
-    "cart/change/<int:product_id>/<str:action>/",
-    views.change_cart_item,
-    name="change_cart_item"
-    ),
+    path("cart/change/<int:product_id>/<str:action>/", views.change_cart_item, name="change_cart_item"),
 ]
