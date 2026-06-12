@@ -1,6 +1,6 @@
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
+from django.views.decorators.http import require_http_methods
 from django.core.exceptions import ValidationError
 from django.views.decorators.http import require_POST
 
@@ -93,14 +93,42 @@ def change_cart_item(request, product_id, action):
     return redirect("cart_detail")
 
 
-@require_POST
-def create_order_view(request):
-    product_id = int(request.POST["product_id"])
-    quantity = int(request.POST["quantity"])
+@require_http_methods(["GET", "POST"])
+def checkout(request):
+    cart = request.session.get("cart", {})
 
-    try:
-        order = create_order_atomic(product_id=product_id, quantity=quantity)
-    except ValidationError as error:
-        return HttpResponse(str(error), status=400)
+    if not cart:
+        return redirect("cart_detail")
 
-    return HttpResponse(f"Utworzono zamówienie #{order.id}")
+    if request.method == "POST":
+        try:
+            order = create_order_atomic(cart=cart)
+        except ValidationError as error:
+            return render(
+                request,
+                "shopapp/order_failed.html",
+                {
+                    "error": error,
+                    "cart_unique_count": len(cart),
+                }
+            )
+
+        request.session["cart"] = {}
+        request.session.modified = True
+
+        return render(
+            request,
+            "shopapp/order_success.html",
+            {
+                "order": order,
+                "cart_unique_count": 0,
+            }
+        )
+
+    return render(
+        request,
+        "shopapp/order_form.html",
+        {
+            "cart_unique_count": len(cart),
+        }
+    )

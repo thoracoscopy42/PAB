@@ -1,18 +1,15 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <title>Zamówienie przyjęte</title>
-</head>
-<body>
-    <h1>Zamówienie zostało przyjęte</h1>
+<h1>Zamówienie zostało złożone</h1>
 
-    <p>Produkt: {{ product.name }}</p>
-    <p>Zamówiona ilość: {{ quantity }}</p>
-    <p>Pozostało na magazynie: {{ product.stock }}</p>
+<p>Numer zamówienia: {{ order.id }}</p>
 
+<h2>Pozycje zamówienia</h2>
+
+{% for item in order.items.all %}
     <p>
-        <a href="{% url 'index' %}">Powrót do sklepu</a>
+        {{ item.product.name }} — {{ item.quantity }} szt.
     </p>
-</body>
-</html>
+{% endfor %}
+
+<a href="{% url 'index' %}">
+    Powrót do sklepu
+</a>

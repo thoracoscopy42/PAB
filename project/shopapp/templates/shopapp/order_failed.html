@@ -1,19 +1,7 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <title>Brak produktu</title>
-</head>
-<body>
-    <h1>Nie można zrealizować zamówienia</h1>
+<h1>Nie udało się złożyć zamówienia</h1>
 
-    <p>Produkt: {{ product.name }}</p>
-    <p>Zamówiona ilość: {{ requested_quantity }}</p>
-    <p>Dostępna ilość: {{ available_quantity }}</p>
-    <p>Brakuje: {{ missing_quantity }}</p>
+<p>{{ error }}</p>
 
-    <p>
-        <a href="{% url 'order_product' %}">Spróbuj ponownie</a>
-    </p>
-</body>
-</html>
+<a href="{% url 'cart_detail' %}">
+    Wróć do koszyka
+</a>
