@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models import F
 
-from .models import Product, Order, OrderItem, Customer
+from .models import Product, Order, OrderItem
 
 
 @transaction.atomic
@@ -10,14 +10,7 @@ def create_order_atomic(cart: dict) -> Order:
     if not cart:
         raise ValidationError("Koszyk jest pusty.")
 
-    customer = Customer.objects.first()
-
-    if customer is None:
-        raise ValidationError("Brak klienta w bazie danych.")
-
-    order = Order.objects.create(
-        customer=customer
-    )
+    order = Order.objects.create()
 
     for product_id_as_string, quantity in cart.items():
         product_id = int(product_id_as_string)

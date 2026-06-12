@@ -16,16 +16,11 @@ class Product(models.Model):
     
 class Order(models.Model):
 
-    customer = models.ForeignKey(
-        "Customer",
-        on_delete=models.CASCADE,
-        related_name="orders"
-    )
 
     order_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.order_date:%Y-%m-%d %H:%M} - {self.customer.name}"
+        return f"{self.order_date:%Y-%m-%d %H:%M}"
     
 class OrderItem(models.Model):
 
@@ -53,13 +48,5 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name}"
-
-class Customer(models.Model):
-
-    name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
-
-    def __str__(self):
-        return self.name
 
 
