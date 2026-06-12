@@ -24,7 +24,10 @@ def create_order_from_cart_atomic(cart: dict) -> Order:
 
         if product.stock < quantity:
             raise ValidationError(
-                f"Brak wystarczającej ilości produktu: {product.name}."
+                f"Nie można zrealizować zamówienia. "
+                f"Produkt: {product.name}. "
+                f"W koszyku: {quantity} szt. "
+                f"Dostępne na magazynie: {product.stock} szt."
             )
 
         OrderItem.objects.create(
