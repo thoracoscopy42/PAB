@@ -1,7 +1,11 @@
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
+from django.core.exceptions import ValidationError
+from django.views.decorators.http import require_POST
+
 from .models import Product
+from .services import create_order_atomic
 
 
 
@@ -87,3 +91,16 @@ def change_cart_item(request, product_id, action):
     request.session.modified = True
 
     return redirect("cart_detail")
+
+
+@require_POST
+def create_order_view(request):
+    product_id = int(request.POST["product_id"])
+    quantity = int(request.POST["quantity"])
+
+    try:
+        order = create_order_atomic(product_id=product_id, quantity=quantity)
+    except ValidationError as error:
+        return HttpResponse(str(error), status=400)
+
+    return HttpResponse(f"Utworzono zamówienie #{order.id}")
