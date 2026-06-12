@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Płatność</title>
+    <link rel="stylesheet" href="{% static 'shopapp/css/style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-content">
+            <h1 class="logo">Sklep</h1>
+
+            <nav class="nav">
+                <a href="{% url 'cart_detail' %}" class="cart-link">
+                    Koszyk: {{ cart_unique_count|default:0 }}
+                </a>
+
+                <a href="/admin/" class="nav-link">Admin</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h2>Płatność</h2>
+            <p>Sprawdź zamówienie i potwierdź płatność.</p>
+        </section>
+
+        <section class="cart-box">
+            {% for item in cart_items %}
+                <div class="cart-item">
+                    <div>
+                        <h3>{{ item.product.name }}</h3>
+                        <p>Ilość: {{ item.quantity }}</p>
+                    </div>
+
+                    <div class="cart-item-meta">
+                        <span>{{ item.product.price }} zł / szt.</span>
+                        <strong>{{ item.line_total }} zł</strong>
+                    </div>
+                </div>
+            {% endfor %}
+
+            <div class="cart-actions checkout-actions">
+                <a href="{% url 'cart_detail' %}" class="button secondary-button checkout-back-button">
+                    Wróć do koszyka
+                </a>
+
+                <form method="post" action="{% url 'confirm_checkout' %}" class="checkout-pay-form">
+                    {% csrf_token %}
+                    <button type="submit" class="button checkout-pay-button">
+                        Zapłać i złóż zamówienie
+                    </button>
+                </form>
+            </div>
+
+            <h3>Razem: {{ total_price }} zł</h3>
+        </section>
+    </main>
+</body>
+</html>

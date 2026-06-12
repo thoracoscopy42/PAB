@@ -1,15 +1,33 @@
-<h1>Zamówienie zostało złożone</h1>
+{% load static %}
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Zamówienie przyjęte</title>
+    <link rel="stylesheet" href="{% static 'shopapp/css/style.css' %}">
+</head>
+<body>
+    <div class="modal-backdrop" data-modal>
+        <div class="modal-box">
+            <h2 class="success-title">Płatność zakończona sukcesem</h2>
 
-<p>Numer zamówienia: {{ order.id }}</p>
+            <p>
+                Zamówienie zostało utworzone.
+                Numer zamówienia: #{{ order.id }}.
+            </p>
 
-<h2>Pozycje zamówienia</h2>
+            <div class="modal-actions">
+                <a href="{% url 'index' %}" class="button">
+                    Wróć do sklepu
+                </a>
 
-{% for item in order.items.all %}
-    <p>
-        {{ item.product.name }} — {{ item.quantity }} szt.
-    </p>
-{% endfor %}
+                <button type="button" class="button secondary-button" data-modal-close>
+                    Zamknij
+                </button>
+            </div>
+        </div>
+    </div>
 
-<a href="{% url 'index' %}">
-    Powrót do sklepu
-</a>
+    <script src="{% static 'shopapp/js/modal.js' %}"></script>
+</body>
+</html>

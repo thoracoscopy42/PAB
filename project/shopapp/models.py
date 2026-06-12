@@ -20,7 +20,7 @@ class Order(models.Model):
     order_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.order_date:%Y-%m-%d %H:%M}"
+        return f"Zamówienie #{self.id} - {self.order_date:%Y-%m-%d %H:%M}"
     
 class OrderItem(models.Model):
 

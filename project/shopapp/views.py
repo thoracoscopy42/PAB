@@ -1,11 +1,12 @@
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_http_methods
+from django.http import HttpResponse
 from django.core.exceptions import ValidationError
 from django.views.decorators.http import require_POST
 
 from .models import Product
-from .services import create_order_atomic
+from .services import create_order_from_cart_atomic
 
 
 
@@ -93,42 +94,63 @@ def change_cart_item(request, product_id, action):
     return redirect("cart_detail")
 
 
-@require_http_methods(["GET", "POST"])
 def checkout(request):
     cart = request.session.get("cart", {})
 
     if not cart:
         return redirect("cart_detail")
 
-    if request.method == "POST":
-        try:
-            order = create_order_atomic(cart=cart)
-        except ValidationError as error:
-            return render(
-                request,
-                "shopapp/order_failed.html",
-                {
-                    "error": error,
-                    "cart_unique_count": len(cart),
-                }
-            )
+    product_ids = cart.keys()
+    products = Product.objects.filter(id__in=product_ids)
 
-        request.session["cart"] = {}
-        request.session.modified = True
+    cart_items = []
+    total_price = 0
 
-        return render(
-            request,
-            "shopapp/order_success.html",
-            {
-                "order": order,
-                "cart_unique_count": 0,
-            }
-        )
+    for product in products:
+        product_id_as_string = str(product.id)
+        quantity = cart[product_id_as_string]
+        line_total = product.price * quantity
+        total_price += line_total
+
+        cart_items.append({
+            "product": product,
+            "quantity": quantity,
+            "line_total": line_total,
+        })
 
     return render(
         request,
-        "shopapp/order_form.html",
+        "shopapp/checkout.html",
         {
+            "cart_items": cart_items,
+            "total_price": total_price,
             "cart_unique_count": len(cart),
+        }
+    )
+
+
+@require_POST
+def confirm_checkout(request):
+    cart = request.session.get("cart", {})
+
+    try:
+        order = create_order_from_cart_atomic(cart)
+    except ValidationError as error:
+        return render(
+            request,
+            "shopapp/order_failed.html",
+            {
+                "message": error.message,
+            }
+        )
+
+    request.session["cart"] = {}
+    request.session.modified = True
+
+    return render(
+        request,
+        "shopapp/order_success.html",
+        {
+            "order": order,
         }
     )

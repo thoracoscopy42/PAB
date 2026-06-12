@@ -1,7 +1,32 @@
-<h1>Nie udało się złożyć zamówienia</h1>
+{% load static %}
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Płatność nieudana</title>
+    <link rel="stylesheet" href="{% static 'shopapp/css/style.css' %}">
+</head>
+<body>
+    <div class="modal-backdrop" data-modal>
+        <div class="modal-box">
+            <h2 class="error-title">Płatność nieudana</h2>
 
-<p>{{ error }}</p>
+            <p>
+                {{ message }}
+            </p>
 
-<a href="{% url 'cart_detail' %}">
-    Wróć do koszyka
-</a>
+            <div class="modal-actions">
+                <a href="{% url 'cart_detail' %}" class="button">
+                    Wróć do koszyka
+                </a>
+
+                <button type="button" class="button secondary-button" data-modal-close>
+                    Zamknij
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'shopapp/js/modal.js' %}"></script>
+</body>
+</html>
